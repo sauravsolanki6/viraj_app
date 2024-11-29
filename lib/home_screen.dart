@@ -281,10 +281,10 @@ class _MyDashboardState extends State<MyDashboard> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFEC5012),
+        backgroundColor: const Color(0xFFCC332B),
         appBar: AppBar(
           toolbarHeight: 90.0,
-          backgroundColor: const Color(0xFFEC5012),
+          backgroundColor: const Color(0xFFCC332B),
           automaticallyImplyLeading: false,
           iconTheme:
               const IconThemeData(color: Color.fromARGB(255, 233, 205, 205)),
@@ -302,7 +302,7 @@ class _MyDashboardState extends State<MyDashboard> {
           key: _refreshIndicatorKey,
           onRefresh: _handleRefresh,
           backgroundColor: Colors.white,
-          color: const Color(0xFFE03A1D),
+          color: const Color(0xFFCC332B),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -310,7 +310,7 @@ class _MyDashboardState extends State<MyDashboard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    color: const Color(0xFFEC5012),
+                    color: const Color(0xFFCC332B),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
@@ -364,7 +364,7 @@ class _MyDashboardState extends State<MyDashboard> {
                               ),
                               Icon(
                                 Icons.notifications_active_outlined,
-                                color: Color(0xFFEC5012),
+                                color: Color(0xFFCC332B),
                                 size: 20.0,
                               ),
                             ],
@@ -411,7 +411,7 @@ class _MyDashboardState extends State<MyDashboard> {
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          selectedItemColor: const Color(0xFFE03A1D),
+          selectedItemColor: const Color(0xFFCC332B),
           unselectedItemColor: Colors.black54,
           showUnselectedLabels: true,
           backgroundColor: Colors.white,

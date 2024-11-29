@@ -18,101 +18,123 @@ class _SideBarState extends State<SideBar> {
 
   @override
   Widget build(BuildContext context) {
-    double width1 = MediaQuery.of(context).size.width * 0.2;
+    double width = MediaQuery.of(context).size.width * 0.2;
     double height1 = MediaQuery.of(context).size.height * 0.22;
 
     return Drawer(
-      backgroundColor: const Color.fromARGB(255, 103, 102, 101),
-      width: 270,
+      backgroundColor: Color(0xFFFFFFFF), // Use the color code for white
+      width: 270, // Keep the fixed width for the drawer
       child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("images/sidebar2.jpg"),
-            fit: BoxFit.contain,
-          ),
-        ),
-        child: ListView(
-          padding: EdgeInsets.only(top: height1),
-          children: <Widget>[
-            _buildSidebarItem(
-              imagePath: 'images/box6.png', // Path to the dashboard image
-              title: 'Dashboard',
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ProfilePage()),
-                // );
-              },
+        width: double.infinity, // Ensure the container takes full width
+        height: double.infinity, // Ensure the container takes full height
+        child: Stack(
+          children: [
+            // Top image (sidebar.png) that appears only on the top 30px
+            Positioned(
+              top: 50,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: MediaQuery.of(context).size.height *
+                    0.1, // Adjust height based on screen height
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("images/logo.png"),
+                    fit: BoxFit
+                        .cover, // Maintain aspect ratio while filling the space
+                  ),
+                ),
+              ),
             ),
-            _buildSidebarItem(
-              imagePath:
-                  'images/production_icon.png', // Path to the production image
-              title: 'Production',
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ApplyLeavePage()),
-                // );
-              },
-            ),
-            _buildSidebarItem(
-              imagePath:
-                  'images/qc_management_icon.png', // Path to QC Management image
-              title: 'QC Management',
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => LeavesList()),
-                // );
-              },
-            ),
-            _buildSidebarItem(
-              imagePath:
-                  'images/ready_stock_icon.png', // Path to Ready Stock image
-              title: 'Ready Stock',
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => TaskCreatePage()),
-                // );
-              },
-            ),
-            _buildSidebarItem(
-              imagePath: 'images/dispatch_icon.png', // Path to Dispatch image
-              title: 'Dispatch',
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => NotificationPage()),
-                // );
-              },
-            ),
-            _buildSidebarItem(
-              imagePath: 'images/rework_icon.png', // Path to Rework image
-              title: 'Push For Rework',
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => NotificationPage()),
-                // );
-              },
-            ),
-            _buildSidebarItem(
-              imagePath: 'images/settings_icon.png', // Path to Settings image
-              title: 'Settings',
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => NotificationPage()),
-                // );
-              },
-            ),
-            _buildSidebarItem(
-              imagePath: 'images/logout_icon.png', // Path to Logout image
-              title: 'Logout',
-              onTap: () {
-                _showLogoutConfirmationDialog(context);
-              },
+            // Main ListView that holds sidebar items
+            ListView(
+              padding: EdgeInsets.only(
+                  top:
+                      height1), // Adjust padding to avoid overlap with the image
+              children: <Widget>[
+                _buildSidebarItem(
+                  imagePath: 'images/box6.png', // Path to the dashboard image
+                  title: 'Dashboard',
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => ProfilePage()),
+                    // );
+                  },
+                ),
+                _buildSidebarItem(
+                  imagePath:
+                      'images/production_icon.png', // Path to the production image
+                  title: 'Production',
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => ApplyLeavePage()),
+                    // );
+                  },
+                ),
+                _buildSidebarItem(
+                  imagePath:
+                      'images/qc_management_icon.png', // Path to QC Management image
+                  title: 'QC Management',
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => LeavesList()),
+                    // );
+                  },
+                ),
+                _buildSidebarItem(
+                  imagePath:
+                      'images/ready_stock_icon.png', // Path to Ready Stock image
+                  title: 'Ready Stock',
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => TaskCreatePage()),
+                    // );
+                  },
+                ),
+                _buildSidebarItem(
+                  imagePath:
+                      'images/dispatch_icon.png', // Path to Dispatch image
+                  title: 'Dispatch',
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => NotificationPage()),
+                    // );
+                  },
+                ),
+                _buildSidebarItem(
+                  imagePath: 'images/rework_icon.png', // Path to Rework image
+                  title: 'Push For Rework',
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => NotificationPage()),
+                    // );
+                  },
+                ),
+                _buildSidebarItem(
+                  imagePath:
+                      'images/settings_icon.png', // Path to Settings image
+                  title: 'Settings',
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => NotificationPage()),
+                    // );
+                  },
+                ),
+                _buildSidebarItem(
+                  imagePath: 'images/logout_icon.png', // Path to Logout image
+                  title: 'Logout',
+                  onTap: () {
+                    _showLogoutConfirmationDialog(context);
+                  },
+                ),
+              ],
             ),
           ],
         ),
