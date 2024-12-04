@@ -43,7 +43,9 @@ class _SplashScreenState extends State<SplashScreen> {
       if (isLoginFirst == "1") {
         Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context) {
-            return SignUpPage();
+            // return SignUpPage();
+
+            return Onboarding();
           },
         ));
       } else {

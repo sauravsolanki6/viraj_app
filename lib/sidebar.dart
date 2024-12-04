@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:viraj_application/production.dart';
 import 'package:viraj_application/signup.dart';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:http/http.dart' as http;
+
+import 'dart:io'; // Import for Platform class
 
 class SideBar extends StatefulWidget {
   const SideBar({Key? key});
@@ -14,6 +21,79 @@ class _SideBarState extends State<SideBar> {
   void initState() {
     super.initState();
     // Perform initialization if needed
+  }
+
+  Future<Map<String, dynamic>> getDeviceDetails() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    Map<String, dynamic> deviceDetails = {};
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      deviceDetails = {
+        'device': androidInfo.model,
+        'manufacturer': androidInfo.manufacturer,
+        'android_version': androidInfo.version.release,
+        'device_id': androidInfo.id, // Unique device ID
+        'app_version':
+            '0.0.4', // Update this to fetch the app version dynamically if needed
+      };
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      deviceDetails = {
+        'device': iosInfo.utsname.machine,
+        'manufacturer': 'Apple',
+        'ios_version': iosInfo.systemVersion,
+        'device_id': iosInfo.identifierForVendor, // Unique device ID
+        'app_version':
+            '0.0.4', // Update this to fetch the app version dynamically if needed
+      };
+    }
+
+    return deviceDetails;
+  }
+
+  Future<void> sendDeviceDetails(Map<String, dynamic> deviceDetails) async {
+    // Retrieve the mobile number from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? mobileNumber = prefs.getString('mobileNumber') ?? '';
+
+    // URL of the API endpoint
+    final url = 'https://staginglink.org/viraj_techplast/set_user_logout';
+
+    // Prepare the request payload
+    final requestPayload = {
+      "project": "viraj",
+      "device_id": deviceDetails['device_id'] ?? "",
+      "device_details": json.encode(deviceDetails),
+      "permission_details": json.encode([]), // Example, update as needed
+      "mobile_no": mobileNumber, // Use the mobile number from SharedPreferences
+      "name": "", // Add name if needed
+    };
+
+    try {
+      // Make the POST request
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(requestPayload),
+      );
+
+      // Print the complete response body
+      print("Response status: ${response.statusCode}");
+      log("Response body of device details: ${response.body}");
+
+      if (response.statusCode == 200) {
+        // Parse the response if successful
+        final responseData = json.decode(response.body);
+        print("Response message: ${responseData['message']}");
+      } else {
+        print("Failed to send request. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+    }
   }
 
   @override
@@ -67,10 +147,10 @@ class _SideBarState extends State<SideBar> {
                       'images/production_icon.png', // Path to the production image
                   title: 'Production',
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => ApplyLeavePage()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProductionPage()),
+                    );
                   },
                 ),
                 _buildSidebarItem(
@@ -263,9 +343,13 @@ class _SideBarState extends State<SideBar> {
                                 ),
                                 child: ElevatedButton(
                                   onPressed: () async {
+                                    Map<String, dynamic> deviceDetails =
+                                        await getDeviceDetails();
+
                                     SharedPreferences pref =
                                         await SharedPreferences.getInstance();
                                     await pref.clear();
+                                    await sendDeviceDetails(deviceDetails);
                                     Navigator.pop(context);
 
                                     Navigator.pushAndRemoveUntil(

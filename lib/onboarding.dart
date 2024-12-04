@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viraj_application/onboarding2.dart';
 import 'package:viraj_application/signup.dart';
 
-
 class Onboarding extends StatefulWidget {
   const Onboarding({Key? key}) : super(key: key);
 
@@ -86,7 +85,7 @@ class _OnboardingState extends State<Onboarding> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                SizedBox(height: 25.0),
+                // SizedBox(height: 25.0),
                 Text(
                   title,
                   style: TextStyle(
@@ -108,7 +107,7 @@ class _OnboardingState extends State<Onboarding> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 10.0),
+                SizedBox(height: 20.0),
                 Text(
                   description,
                   style: TextStyle(
@@ -117,7 +116,7 @@ class _OnboardingState extends State<Onboarding> {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 25.0),
+                SizedBox(height: 50.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -156,7 +155,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ],
                 ),
-                SizedBox(height: 25.0),
+                SizedBox(height: 80.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,

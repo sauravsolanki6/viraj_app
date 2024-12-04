@@ -17,43 +17,44 @@ class _SignUpPageState extends State<SignUpPage> {
   String errorMessage = "";
   bool validateMobileNumber = true;
   bool _isChecked = true;
-  bool loading = true;
 
   @override
   void dispose() {
     super.dispose();
-    validateMobileNumber = true;
-    errorMessage = "";
-    _mobileController.clear();
+    _mobileController.dispose();
   }
 
   // Function to save user data in SharedPreferences
-  Future<void> _saveUserData(String userId, String mobileNumber) async {
+  Future<void> _saveUserData(String mobileNumber) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userId', userId);
     await prefs.setString('mobileNumber', mobileNumber);
+    print("Mobile Number Saved: $mobileNumber");
   }
 
   // Function to make API call to get OTP
   void _getOTP() async {
     String mobileNumber = _mobileController.text.trim();
-    String pushToken = "";
 
-    if (mobileNumber.isEmpty) {
+    if (mobileNumber.isEmpty || mobileNumber.length != 10) {
       setState(() {
         validateMobileNumber = false;
-        errorMessage = "Mobile number cannot be empty";
+        errorMessage = mobileNumber.isEmpty
+            ? "Mobile number cannot be empty"
+            : "Mobile number must be 10 digits";
       });
       return;
     }
 
-    String apiUrl = "https://staginglink.org/twice/agent_login_api";
+    String apiUrl = "https://staginglink.org/viraj_techplast/user_login_otp";
     Map<String, dynamic> body = {
-      "mobile_number": mobileNumber,
-      "push_token": pushToken,
+      "mobile": mobileNumber,
+      // "push_token": "",
     };
 
     try {
+      // Print the request body
+      print("Request Body: ${jsonEncode(body)}");
+
       var response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{
@@ -61,6 +62,10 @@ class _SignUpPageState extends State<SignUpPage> {
         },
         body: jsonEncode(body),
       );
+
+      // Print the response status and body
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
@@ -72,10 +77,8 @@ class _SignUpPageState extends State<SignUpPage> {
           if (status) {
             print("API Response: Success");
 
-            // Save id and mobile_number in SharedPreferences
-            String userId = jsonResponse['data'][0]['id'];
-            String mobileNumber = jsonResponse['data'][0]['mobile_number'];
-            await _saveUserData(userId, mobileNumber);
+            // Save mobile_number in SharedPreferences
+            await _saveUserData(mobileNumber);
 
             // Show success Snackbar
             ScaffoldMessenger.of(context).showSnackBar(
@@ -120,6 +123,51 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  // void _getOTP() async {
+  //   String mobileNumber = _mobileController.text.trim();
+
+  //   if (mobileNumber.isEmpty || mobileNumber.length != 10) {
+  //     setState(() {
+  //       validateMobileNumber = false;
+  //       errorMessage = mobileNumber.isEmpty
+  //           ? "Mobile number cannot be empty"
+  //           : "Mobile number must be 10 digits";
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     // Save mobile_number in SharedPreferences
+  //     await _saveUserData(mobileNumber);
+
+  //     // Show success Snackbar
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         backgroundColor: Colors.green,
+  //         content: Text("Otp Sent successfully"),
+  //         duration: Duration(seconds: 3),
+  //       ),
+  //     );
+
+  //     // Navigate to OTP page
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => SignUpOTPPage(),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     print("Exception during save operation: $e");
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         backgroundColor: Colors.red,
+  //         content: Text("Failed to save mobile number"),
+  //         duration: Duration(seconds: 3),
+  //       ),
+  //     );
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,8 +211,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: TextFormField(
                   controller: _mobileController,
                   keyboardType: TextInputType.phone,
+                  maxLength: 10,
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
                   onChanged: (value) {
                     validateMobileNumber = true;
@@ -187,17 +236,20 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     hintText: 'Enter Your Mobile Number',
                     hintStyle: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xffB7B7B7)),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xffB7B7B7),
+                    ),
                     errorText: validateMobileNumber ? null : errorMessage,
+                    counterText: '', // Removes the character counter
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color: Colors.orange),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: const Color.fromARGB(255, 252, 250, 250)!),
+                        color: const Color.fromARGB(255, 252, 250, 250)!,
+                      ),
                     ),
                     fillColor: Theme.of(context).scaffoldBackgroundColor,
                     filled: true,
@@ -238,8 +290,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFFEC5012),
-                        Color(0xFFD72B23),
+                        Color(0xFFCC332B),
+                        Color(0xFFCC332B),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(6.0),
